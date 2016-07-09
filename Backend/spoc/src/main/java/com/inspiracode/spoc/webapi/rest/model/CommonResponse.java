@@ -5,63 +5,44 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.inspiracode.spoc.model.IBaseEntity;
+import com.inspiracode.spoc.model.ValidationError;
 
-public class CommonResponse implements Serializable {
+public class CommonResponse<T extends IBaseEntity> implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	public CommonResponse() {
-		this.error = false;
-		this.responseDescription = "OK";
+		this.setSuccess(true);
 	}
 
-	public CommonResponse(List<IBaseEntity> data) {
+	public CommonResponse(T entity) {
+		this();
+		this.data.add(entity);
+	}
+
+	public CommonResponse(List<T> data) {
 		this();
 		this.data = data;
 	}
 
-	public CommonResponse(String responseDescription) {
-		this.responseDescription = responseDescription;
-		this.error = true;
+	public CommonResponse(T data, List<ValidationError> validationErrorList) {
+		this();
+		this.data.add(data);
+		this.validationError = validationErrorList;
 	}
 
-	private Boolean error = false;
-	private String responseDescription;
-	private List<IBaseEntity> data = new ArrayList<IBaseEntity>();
-
-	/**
-	 * @return the error
-	 */
-	public Boolean getError() {
-		return error;
+	public CommonResponse(String sError) {
+		validationError.add(new ValidationError(sError));
+		this.setSuccess(false);
 	}
 
-	/**
-	 * @param error
-	 *            the error to set
-	 */
-	public void setError(Boolean error) {
-		this.error = error;
-	}
-
-	/**
-	 * @return the responseDescription
-	 */
-	public String getResponseDescription() {
-		return responseDescription;
-	}
-
-	/**
-	 * @param responseDescription
-	 *            the responseDescription to set
-	 */
-	public void setResponseDescription(String responseDescription) {
-		this.responseDescription = responseDescription;
-	}
+	private boolean success = true;
+	private List<T> data = new ArrayList<>();
+	private List<ValidationError> validationError = new ArrayList<>();
 
 	/**
 	 * @return the data
 	 */
-	public List<IBaseEntity> getData() {
+	public List<T> getData() {
 		return data;
 	}
 
@@ -69,7 +50,37 @@ public class CommonResponse implements Serializable {
 	 * @param data
 	 *            the data to set
 	 */
-	public void setData(List<IBaseEntity> data) {
+	public void setData(List<T> data) {
 		this.data = data;
+	}
+
+	/**
+	 * @return the validationError
+	 */
+	public List<ValidationError> getValidationError() {
+		return validationError;
+	}
+
+	/**
+	 * @param validationError
+	 *            the validationError to set
+	 */
+	public void setValidationError(List<ValidationError> validationError) {
+		this.validationError = validationError;
+	}
+
+	/**
+	 * @return the success
+	 */
+	public boolean isSuccess() {
+		return success;
+	}
+
+	/**
+	 * @param success
+	 *            the success to set
+	 */
+	public void setSuccess(boolean success) {
+		this.success = success;
 	}
 }
